@@ -51,6 +51,8 @@
 \newcommand{\liuhao}{\fontsize{7.875pt}{\baselineskip}\selectfont}
 \newcommand{\qihao}{\fontsize{5.25pt}{\baselineskip}\selectfont}
 \newcommand{\zap}[1]{}
+\newcommand\TODO[1]{{\color{red}{Todo: #1}}}
+\newcommand{\TBD}[1]{{\color{blue}#1}}
 
 \begin{document}
 \begin{spacing}{1.2}
@@ -165,20 +167,30 @@
   \item 用户重复购买的预测。
 \end{enumerate}
 
+\TODO{实验环境}
+
 \subsection{商品平凡模式挖掘}
 我们使用FPGrowth算法进行商品关联规则挖掘，
 
-该算法...
+该算法...\TODO{算法review}
 
-实验环境...
-数据...
+数据...\TODO{描述使用到的数据}
 
 \subsection{同一商家用户的分类}
 。。。
 
-\subsubsection{用户重复购买的预测}
+\subsection{用户重复购买的预测}
 %\texttt{{\char'134}user\_gender}
 我们提取了 \texttt{{\char'134}user\_gender} 等...个特征，。。。
+
+\TODO{特征工程}
+
+\TODO{算法框架}
+
+\TODO{模型、融合}
+
+\subsection{第四个问题？}
+\TODO{思考第四个问题} 或者直接从前面归结出一个问题
 
 \section{结果与分析}
 
