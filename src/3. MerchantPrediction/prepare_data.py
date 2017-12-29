@@ -54,11 +54,13 @@ def read_user_info(user_path):
     return user_fea
 
 
+
+
 import os
 if __name__ == "__main__":
     pre_path = os.path.dirname(os.path.dirname(os.getcwd()))
-    log_path = pre_path + "/data/user_log_format1.csv"
-    merchant_user = generate_dic(log_path)
+    log_path = pre_path + "/data/original_data/user_log_format1.csv"
+    user_merchant_key_dic, user_key_dic, merchant_key_dic = generate_dic(log_path)
 
-    user_path = pre_path + "/data/user_info_format1.csv"
+    user_path = pre_path + "/data/original_data/user_info_format1.csv"
     user_fea = read_user_info(user_path)

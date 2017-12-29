@@ -129,13 +129,13 @@ class GenerateFeatures:
 if __name__ == "__main__":
     pre_path = os.path.dirname(os.getcwd())
     ##  prepare data
-    log_path = pre_path + "/data/user_log_format1.csv"
-    user_path = pre_path + "/data/user_info_format1.csv"
+    log_path = pre_path + "/data/original_data/user_log_format1.csv"
+    user_path = pre_path + "/data/original_data/user_info_format1.csv"
     generate_fea = GenerateFeatures()
     generate_fea.gen_dic(log_path,user_path)
 
     ## generate features
-    in_path = pre_path + "/data/train_format.csv"
+    in_path = pre_path + "/data/original_data/train_format.csv"
     out_path = pre_path + "/data/features.csv"
     num_process = 48
     print "Building feature from %s to %s..." % (in_path, out_path)

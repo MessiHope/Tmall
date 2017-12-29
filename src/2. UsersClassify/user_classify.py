@@ -72,20 +72,20 @@ def save_result(result,out_path,headers):
 
 if __name__ == "__main__":
     pre_path = os.path.dirname(os.path.dirname(os.getcwd()))
-    log_path = pre_path + "/data/user_log_format1.csv"
+    log_path = pre_path + "/data/original_data/user_log_format1.csv"
     # start_time = time.time()
     merchant_user = merchant_to_user(log_path)
 
-    user_path = pre_path + "/data/user_info_format1.csv"
+    user_path = pre_path + "/data/original_data/user_info_format1.csv"
     user_fea = user_to_fea(user_path)
 
     result = merchant_to_fea(merchant_user, user_fea)
 
-    out_path = pre_path + "/data/merchant_fea.csv"
+    out_path = pre_path + "/data/user_classify/merchant_fea.csv"
     headers = ['merchant', 'age_range', 'gender']
     save_result(result, out_path,headers)
 
     fea_num = cal_num(result)
-    out_path = pre_path + "/data/merchant_fea_num.csv"
+    out_path = pre_path + "/data/user_classify/merchant_fea_num.csv"
     headers = ['merchant', 'age_range', 'gender','num']
     save_result(fea_num, out_path,headers)

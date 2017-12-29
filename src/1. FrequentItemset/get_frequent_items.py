@@ -40,15 +40,13 @@ def to_transactions(purchase_group):
         transactions.append(pur_list)
     return transactions
 
-
-
 import os
 import time
 import sys
 if __name__ == "__main__":
     sys.setrecursionlimit(1000000)
     pre_path = os.path.dirname(os.path.dirname(os.getcwd()))
-    data_path = pre_path + "/data/user_log_sample.csv"
+    data_path = pre_path + "/data/original_data/user_log_sample.csv"
     purchase_group = read_dataset_csv(data_path)
 
     start_time = time.time()

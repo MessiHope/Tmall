@@ -24,5 +24,5 @@ import os
 if __name__ == "__main__":
     ## user_id,merchant_id,label
     pre_path = os.path.dirname(os.getcwd())
-    train_path = pre_path + "/data/train_format1.csv"
+    train_path = pre_path + "/data/original_data/train_format1.csv"
     ori_data = read_data(train_path)
