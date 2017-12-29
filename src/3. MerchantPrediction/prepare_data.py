@@ -56,7 +56,7 @@ def read_user_info(user_path):
 
 import os
 if __name__ == "__main__":
-    pre_path = os.path.dirname(os.getcwd())
+    pre_path = os.path.dirname(os.path.dirname(os.getcwd()))
     log_path = pre_path + "/data/user_log_format1.csv"
     merchant_user = generate_dic(log_path)
 

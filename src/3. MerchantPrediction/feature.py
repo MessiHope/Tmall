@@ -6,9 +6,11 @@
 #@describtion:
 
 import os
+from multiprocessing import Pool
+
 import base
 import prepare_data
-from multiprocessing import Pool
+
 
 class GenerateFeatures:
     def __init__(self):
@@ -32,7 +34,7 @@ class GenerateFeatures:
                 is_new_user_flag = 1
                 break
         return is_new_user_flag
-    # def user_ ……
+    # TODO def user_ ……
     ##  add more features of user
 
 
@@ -55,7 +57,7 @@ class GenerateFeatures:
             return 0.0
         else:
             return purchase_11_num / float(purchase_all_num)
-    # def merchant ……
+    # TODO def merchant_ ……
     ##  add more features of merchant
 
 
@@ -80,6 +82,8 @@ class GenerateFeatures:
             elif(action_type == "3"):
                 add_to_favourite_num += 1
         return click_num,add_to_cart_num,purchase_num,add_to_favourite_num
+    # TODO def merchant_ ……
+    ##  add more features of merchant
 
     def extract_user_feature(self, purchase, fv):
         ## user info

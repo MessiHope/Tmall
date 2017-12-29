@@ -47,7 +47,7 @@ import time
 import sys
 if __name__ == "__main__":
     sys.setrecursionlimit(1000000)
-    pre_path = os.path.dirname(os.getcwd())
+    pre_path = os.path.dirname(os.path.dirname(os.getcwd()))
     data_path = pre_path + "/data/user_log_sample.csv"
     purchase_group = read_dataset_csv(data_path)
 

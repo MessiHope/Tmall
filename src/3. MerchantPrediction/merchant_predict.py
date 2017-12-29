@@ -17,8 +17,6 @@ def read_data(data_path):
 
 def generate_feature(ori_data):
 
-
-
     a = 0
 
 

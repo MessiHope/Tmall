@@ -71,8 +71,7 @@ def save_result(result,out_path,headers):
         writer.writerows(result)
 
 if __name__ == "__main__":
-    pre_path = os.path.dirname(os.getcwd())
-    print pre_path
+    pre_path = os.path.dirname(os.path.dirname(os.getcwd()))
     log_path = pre_path + "/data/user_log_format1.csv"
     # start_time = time.time()
     merchant_user = merchant_to_user(log_path)
