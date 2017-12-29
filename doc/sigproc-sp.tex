@@ -1,0 +1,237 @@
+% THIS IS SIGPROC-SP.TEX - VERSION 3.1
+% WORKS WITH V3.2SP OF ACM_PROC_ARTICLE-SP.CLS
+% APRIL 2009
+%
+% It is an example file showing how to use the 'acm_proc_article-sp.cls' V3.2SP
+% LaTeX2e document class file for Conference Proceedings submissions.
+% ----------------------------------------------------------------------------------------------------------------
+% This .tex file (and associated .cls V3.2SP) *DOES NOT* produce:
+%       1) The Permission Statement
+%       2) The Conference (location) Info information
+%       3) The Copyright Line with ACM data
+%       4) Page numbering
+% ---------------------------------------------------------------------------------------------------------------
+% It is an example which *does* use the .bib file (from which the .bbl file
+% is produced).
+% REMEMBER HOWEVER: After having produced the .bbl file,
+% and prior to final submission,
+% you need to 'insert'  your .bbl file into your source .tex file so as to provide
+% ONE 'self-contained' source file.
+%
+% Questions regarding SIGS should be sent to
+% Adrienne Griscti ---> griscti@acm.org
+%
+% Questions/suggestions regarding the guidelines, .tex and .cls files, etc. to
+% Gerald Murray ---> murray@hq.acm.org
+%
+% For tracking purposes - this is V3.1SP - APRIL 2009
+
+\documentclass{acm_proc_article-sp}
+\usepackage{setspace}
+\usepackage{xeCJK}
+\usepackage{color}
+\usepackage{etoolbox}
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{threeparttable}
+\usepackage{booktabs}
+\usepackage{mathtools}
+\usepackage{listings}          % format code
+\usepackage{url}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{algorithm2e}
+\setCJKmainfont[BoldFont=SimHei]{SimSun}
+\setCJKfamilyfont{hei}{SimHei}
+\setCJKfamilyfont{kai}{KaiTi}
+\setCJKfamilyfont{fang}{FangSong}
+\newcommand{\hei}{\CJKfamily{hei}}
+\newcommand{\kai}{\CJKfamily{kai}}
+\newcommand{\fang}{\CJKfamily{fang}}
+
+\newcommand{\chuhao}{\fontsize{42pt}{\baselineskip}\selectfont}
+
+\newcommand{\xiaochuhao}{\fontsize{36pt}{\baselineskip}\selectfont}
+\newcommand{\yihao}{\fontsize{28pt}{\baselineskip}\selectfont}
+\newcommand{\erhao}{\fontsize{21pt}{\baselineskip}\selectfont}
+\newcommand{\xiaoerhao}{\fontsize{18pt}{\baselineskip}\selectfont}
+\newcommand{\sanhao}{\fontsize{15.75pt}{\baselineskip}\selectfont}
+\newcommand{\sihao}{\fontsize{14pt}{\baselineskip}\selectfont}
+\newcommand{\xiaosihao}{\fontsize{12pt}{\baselineskip}\selectfont}
+\newcommand{\wuhao}{\fontsize{10.5pt}{\baselineskip}\selectfont}
+\newcommand{\xiaowuhao}{\fontsize{9pt}{\baselineskip}\selectfont}
+\newcommand{\liuhao}{\fontsize{7.875pt}{\baselineskip}\selectfont}
+\newcommand{\qihao}{\fontsize{5.25pt}{\baselineskip}\selectfont}
+\newcommand{\zap}[1]{}
+\newcommand\TODO[1]{{\color{red}{Todo: #1}}}
+\newcommand{\TBD}[1]{{\color{blue}#1}}
+
+\begin{document}
+\begin{spacing}{1.2}
+\title{\xiaoerhao\hei 基于天猫交易数据的分析与挖掘\titlenote{具体数据集信息参见https://tianchi.aliyun.com/datalab/d-ataSet.htm?id=5}}
+\zap{
+\subtitle{[Extended Abstract]
+\titlenote{A full version of this paper is available as
+\textit{Author's Guide to Preparing ACM SIG Proceedings Using
+\LaTeX$2_\epsilon$\ and BibTeX} at
+\texttt{www.acm.org/eaddress.htm}}}
+}
+%
+% You need the command \numberofauthors to handle the 'placement
+% and alignment' of the authors beneath the title.
+%
+% For aesthetic reasons, we recommend 'three authors at a time'
+% i.e. three 'name/affiliation blocks' be placed beneath the title.
+%
+% NOTE: You are NOT restricted in how many 'rows' of
+% "name/affiliations" may appear. We just ask that you restrict
+% the number of 'columns' to three.
+%
+% Because of the available 'opening page real-estate'
+% we ask you to refrain from putting more than six authors
+% (two rows with three columns) beneath the article title.
+% More than six makes the first-page appear very cluttered indeed.
+%
+% Use the \alignauthor commands to handle the names
+% and affiliations for an 'aesthetic maximum' of six authors.
+% Add names, affiliations, addresses for
+% the seventh etc. author(s) as the argument for the
+% \additionalauthors command.
+% These 'additional authors' will be output/set for you
+% without further effort on your part as the last section in
+% the body of your article BEFORE References or any Appendices.
+
+\numberofauthors{8} %  in this sample file, there are a *total*
+% of EIGHT authors. SIX appear on the 'first-page' (for formatting
+% reasons) and the remaining two appear in the \additionalauthors section.
+%
+\begin{spacing}{1.2}
+\author{
+% You can go ahead and credit any number of authors here,
+% e.g. one 'row of three' or two rows (consisting of one row of three
+% and a second row of one, two or three).
+%
+% The command \alignauthor (no curly braces needed) should
+% precede each author name, affiliation/snail-mail address and
+% e-mail address. Additionally, tag each line of
+% affiliation/address with \affaddr, and tag the
+% e-mail address with \email.
+%
+% 1st. author
+\alignauthor
+\wuhao\kai {\xiaosihao 王希梅}\\
+       \affaddr{清华大学\ 软件学院}\\
+       \affaddr{北京 \wuhao 100084}\\
+       \email{\wuhao wxm17@mails.tsinghua.edu.cn}
+% 2nd. author
+\alignauthor
+\wuhao\kai {\xiaosihao 于千山}\\
+       \affaddr{清华大学\ 软件学院}\\
+       \affaddr{北京 \wuhao 100084}\\
+       \email{\wuhao yqs17@mails.tsinghua.edu.cn}
+% 3rd. author
+\alignauthor
+\wuhao\kai {\xiaosihao 陳善宇}\\
+       \affaddr{清华大学\ 软件学院}\\
+       \affaddr{北京 \wuhao 100084}\\
+       \email{\wuhao abc321094@gmail.com}
+%\and  % use '\and' if you need 'another row' of author names
+}
+\end{spacing}
+% There's nothing stopping you putting the seventh, eighth, etc.
+% author on the opening page (as the 'third row') but we ask,
+% for aesthetic reasons that you place these 'additional authors'
+% in the \additional authors block, viz.
+
+% Just remember to make sure that the TOTAL number of authors
+% is the number that will appear on the first page PLUS the
+% number that will appear in the \additionalauthors section.
+
+\maketitle
+\begin{abstract}
+我们利用2014年双11（11月11日）前六个月天猫的用户行为日志进行数据挖掘任务。在本次任务中，我们提出四个问题，并分别设计算法进行解决，同时给出了实验结果并进行讨论。这几个问题的解决，对于商家降低促销成本，提高投资回报率（ROI）非常重要。
+\end{abstract}
+
+\zap{
+% A category with the (minimum) three required fields
+\category{H.4}{Information Systems Applications}{Miscellaneous}
+%A category including the fourth, optional field follows...
+\category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
+}
+
+
+\keywords{数据挖掘，聚类分析，行为预测} % NOT required for Proceedings
+
+\section{问题描述} % 阐述问题的合理性或价值
+\label{sec:problem}
+我们提出以下四个问题：
+\begin{enumerate}
+  \item 商品频繁模式挖掘：即分析哪些商品会被一起购买。
+  \item 同一商家用户的分类：商家会拥有很多用户，对于商家来说，如果能够把握用户的行为，清楚用户的类别，就可以更好地提供服务、贩卖商品，并提高投资回报率。在该问题中，我们考虑将同一商家的用户分为\emph{忠实客户}、\emph{潜在忠实客户}和\emph{非忠实客户}三类。
+  \item 同一商家常被购买物品\TBD{种类\ or\ 某些特定物品\  前者意味着还要对物品进行特征提取和分类}：通过对用户行为日志的进行分析，抽取出用户喜好的商品种类。对于商家来说，这有助于把握用户喜好，以便于进行针对性促销。
+  \item 用户重复购买的预测：为了吸引大量的新买家，商家有时会在特定的日子进行大促销）。然而，很多买家都是一次性买家，这些促销活动可能对销售的影响不大。我们期望预测未来哪些特定商家的新买家将成为忠实客户。这些新买家将来再次购买同一批商品的可能性。
+\end{enumerate}
+
+\section{方法设计}
+这一节中，我们考虑对第~\ref{sec:problem}节提出的问题进行方法设计。
+\subsection{商品频繁模式挖掘}
+我们使用FPGrowth算法进行商品关联规则挖掘，
+
+该算法...\TODO{算法review}
+
+数据...\TODO{描述使用到的数据}
+
+\subsection{同一商家用户的分类}
+我们要将同一商家的用户分为\emph{忠实客户}、\emph{潜在忠实客户}和\emph{非忠实客户}三类，首先需要对用户进行特征提取。我们考虑以下特征：\TODO{给一个table}
+
+\subsection{同一商家常被购买物品}
+\TBD{如果不考虑分类就只需要对同一商家所有用户发生四种操作（要加权，例如“购买”权重最高）的物品进行计数，选出最高的几个即可。}
+
+\subsection{用户重复购买的预测}
+%\texttt{{\char'134}user\_gender}
+我们提取了 \texttt{user\_gender} 等...个特征...\TODO{给一个table}
+
+然后选用\TBD{几种模型}，使用\texttt{train\_format1.csv}中$80\%$的数据训练网络，另外$20\%$的数据进行预测。
+
+\TODO{特征工程}
+
+\TODO{算法框架}
+
+\TODO{模型、融合}
+
+
+\section{结果与分析}
+我们所有的实验均在\TODO{实验环境}的主机上进行运行。
+\begin{itemize}
+  \item \textbf{CPU:} 2.3GHz Xeon E5 CPU 72 Cores
+  \item \textbf{RAM:} 250GB
+  \item \textbf{OS:} \TBD{...}
+  \item \textbf{Kernel:} \TBD{...}
+  \item \textbf{Python:} \TBD{...}
+\end{itemize}
+\TODO{我们得到如下结果}
+
+\section{总结}
+\TBD{本文我们用...数据，...方法，分析了...问题，得到了...结果}
+%\end{document}  % This is where a 'short' article might terminate
+
+%ACKNOWLEDGMENTS are optional
+%
+% The following two commands are all you need in the
+% initial runs of your .tex file to
+% produce the bibliography for the citations in your paper.
+\begin{spacing}{1}
+\bibliographystyle{abbrv}
+\bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
+\end{spacing}
+% You must have a proper ".bib" file
+%  and remember to run:
+% latex bibtex latex latex
+% to resolve all references
+%
+% ACM needs 'a single self-contained file'!
+%
+%APPENDICES are optional
+%\balancecolumns
+\end{spacing}
+\end{document}
