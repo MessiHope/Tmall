@@ -7,8 +7,8 @@
 
 import os
 from multiprocessing import Pool
-
 import base
+import csv
 import prepare_data
 
 
@@ -18,12 +18,67 @@ class GenerateFeatures:
         self.user_key_dic = {}
         self.merchant_key_dic = {}
         self.user_info = {}
-    def gen_dic(self,log_path,user_path):
-        user_merchant_key_dic, user_key_dic, merchant_key_dic = prepare_data.generate_dic(log_path)
-        self.user_merchant_key_dic = user_merchant_key_dic
-        self.user_key_dic = user_key_dic
-        self.merchant_key_dic = merchant_key_dic
-        self.user_info = prepare_data.read_user_info(user_path)
+
+    def read_user_dic(self,user_dic_path):
+        user_key_dic = {}
+        with open(user_dic_path) as file:
+            head_line = next(file)
+            lines = csv.reader(file)
+            cur_user = None
+            for line in lines:
+                user = line[0]
+                if(user != cur_user):
+                    user_key_dic[user] = [line]
+                else:
+                    pur_list = user_key_dic[user]
+                    pur_list.append(line)
+                    user_key_dic[user] = pur_list
+                cur_user = user
+        return user_key_dic
+
+    def read_merchant_dic(self,merchant_dic_path):
+        merchant_key_dic = {}
+        with open(merchant_dic_path) as file:
+            head_line = next(file)
+            lines = csv.reader(file)
+            cur_merchant = None
+            for line in lines:
+                merchant = line[3]
+                if(merchant != cur_merchant):
+                    merchant_key_dic[merchant] = [line]
+                else:
+                    pur_list = merchant_key_dic[merchant]
+                    pur_list.append(line)
+                    merchant_key_dic[merchant] = pur_list
+                cur_merchant = merchant
+        return merchant_key_dic
+
+    def read_user_merchant_dic(self,user_merchant_dic_path):
+        user_merchant_key_dic = {}
+        with open(user_merchant_dic_path) as file:
+            head_line = next(file)
+            lines = csv.reader(file)
+            cur_user = None
+            cur_merchant = None
+            for line in lines:
+                user = line[0]
+                merchant = line[3]
+                if(user != cur_user or merchant != cur_merchant):
+                    user_merchant_key_dic[(user,merchant)] = [line]
+                else:
+                    pur_list = user_merchant_key_dic[(user,merchant)]
+                    pur_list.append(line)
+                    user_merchant_key_dic[(user,merchant)] = pur_list
+                cur_user = user
+                cur_merchant = merchant
+        return user_merchant_key_dic
+
+    def gen_dic(self,user_dic_path,merchant_dic_path,user_merchant_dic_path,user_info_path):
+
+        self.user_merchant_key_dic = self.read_user_merchant_dic(user_merchant_dic_path)
+        self.user_key_dic = self.read_user_dic(user_dic_path)
+        self.merchant_key_dic = self.read_merchant_dic(merchant_dic_path)
+        self.user_info = prepare_data.read_user_info(user_info_path)
 
     ##----------------user feature------------------
     def is_new_user(self,user_log):
@@ -36,8 +91,6 @@ class GenerateFeatures:
         return is_new_user_flag
     # TODO def user_ ……
     ##  add more features of user
-
-
 
 
 
@@ -129,12 +182,15 @@ class GenerateFeatures:
 if __name__ == "__main__":
     pre_path = os.path.dirname(os.getcwd())
     ##  prepare data
-    log_path = pre_path + "/data/original_data/user_log_format1.csv"
-    user_path = pre_path + "/data/original_data/user_info_format1.csv"
+    user_dic_path = pre_path + "/data/prepare_data/user_result.csv"
+    merchant_dic_path = pre_path + "/data/prepare_data/merchant_result.csv"
+    user_merchant_dic_path = pre_path + "/data/prepare_data/user_merchant_result.csv"
+    user_info_path = pre_path + "/data/original_data/user_info_format1.csv"
     generate_fea = GenerateFeatures()
-    generate_fea.gen_dic(log_path,user_path)
+    generate_fea.gen_dic(user_dic_path,merchant_dic_path,user_merchant_dic_path,user_info_path)
 
     ## generate features
+    """
     in_path = pre_path + "/data/original_data/train_format.csv"
     out_path = pre_path + "/data/features.csv"
     num_process = 48
@@ -158,4 +214,5 @@ if __name__ == "__main__":
 
         for name in head_line:
             out_column_file.write('%s\n' % name)
+    """
 
