@@ -140,36 +140,40 @@ class GenerateFeatures:
 
     def extract_user_feature(self, purchase, fv):
         ## user info
+
         target_user_info  = self.user_info[purchase.user]
-        fv.insert_real_value(self, target_user_info[0], "age_range")
-        fv.insert_real_value(self, target_user_info[1], "gender")
+        age_range = int(target_user_info[0]) if len(target_user_info[0])>0 else None
+        gender = int(target_user_info[1]) if len(target_user_info[1])>0 else None
+        fv.insert_real_value(age_range, "age_range")
+        fv.insert_real_value(gender, "gender")
 
         ## user_log
-        user_log = self.user_key_dic[purchase.user]
-        is_new_user_flag = self.is_new_user(user_log)
-        fv.insert_real_value(self, is_new_user_flag, "is_new_user_flag")
+        # user_log = self.user_key_dic[purchase.user]
+        # is_new_user_flag = self.is_new_user(user_log)
+        # fv.insert_real_value(is_new_user_flag, "is_new_user_flag")
 
     def extract_merchant_feature(self,purchase,fv):
         ## merchant_log
+        a = 0
         merchant_log = self.merchant_key_dic[purchase.merchant]
         cal_purchase_11_rate = self.cal_purchase_11_rate(merchant_log)
-        fv.insert_real_value(self, cal_purchase_11_rate, "purchase_11_rate")
+        fv.insert_real_value(cal_purchase_11_rate, "purchase_11_rate")
 
     def extract_user_merchant_feature(self, purchase, fv):
         ## user_merchant_log
         user_merchant_log = self.user_merchant_key_dic[(purchase.user,purchase.merchant)]
         click_num, add_to_cart_num, purchase_num, add_to_favourite_num = self.cal_action_num(user_merchant_log)
-        fv.insert_real_value(self, click_num, "click_num")
-        fv.insert_real_value(self, add_to_cart_num, "add_to_cart_num")
-        fv.insert_real_value(self, purchase_num, "purchase_num")
-        fv.insert_real_value(self, add_to_favourite_num, "add_to_favourite_num")
+        fv.insert_real_value(click_num, "click_num")
+        fv.insert_real_value(add_to_cart_num, "add_to_cart_num")
+        fv.insert_real_value(purchase_num, "purchase_num")
+        fv.insert_real_value(add_to_favourite_num, "add_to_favourite_num")
 
     def extract_all(self, line):
         fv = base.FeatureVector()
         purchase = base.Purchase(line[0], line[1], line[2])
         self.extract_user_feature(purchase, fv)
-        self.extract_merchant_feature(purchase, fv)
-        self.extract_user_merchant_feature(purchase, fv)
+        # self.extract_merchant_feature(purchase, fv)
+        # self.extract_user_merchant_feature(purchase, fv)
         return purchase.label, fv
 
     def extract_fstr(self,line):
@@ -177,10 +181,10 @@ class GenerateFeatures:
         if label is None:
             return fv.to_str()
         else:
-            return "%d %s" % (label, fv.to_str())
+            return "%s %s" % (label, fv.to_str())
 
 if __name__ == "__main__":
-    pre_path = os.path.dirname(os.getcwd())
+    pre_path = os.path.dirname(os.path.dirname(os.getcwd()))
     ##  prepare data
     user_dic_path = pre_path + "/data/prepare_data/user_result.csv"
     merchant_dic_path = pre_path + "/data/prepare_data/merchant_result.csv"
@@ -189,30 +193,35 @@ if __name__ == "__main__":
     generate_fea = GenerateFeatures()
     generate_fea.gen_dic(user_dic_path,merchant_dic_path,user_merchant_dic_path,user_info_path)
 
+
     ## generate features
-    """
-    in_path = pre_path + "/data/original_data/train_format.csv"
+    in_path = pre_path + "/data/original_data/train_format1.csv"
     out_path = pre_path + "/data/features.csv"
     num_process = 48
     print "Building feature from %s to %s..." % (in_path, out_path)
 
     with open(in_path) as in_file, \
         open(out_path, 'w') as out_file, \
-        open(out_path + "_column_names", 'w') as out_column_file:
+        open(out_path.split(".csv")[0] + "_column_names", 'w') as out_column_file:
 
-        head_line = in_file.readline()
+        headers = next(in_file)
+        lines = csv.reader(in_file)
 
-        lines = [line for line in in_file]
-        if num_process > 1:
-            p = Pool(num_process)
-            fvstrs = p.map(generate_fea.extract_fstr, lines)
-        else:
-            fvstrs = map(generate_fea.extract_fstr, lines)
-
-        for fvstr in fvstrs:
+        head_line = next(lines)
+        _,head_fv = generate_fea.extract_all(head_line)
+        for line in lines:
+            fvstr = generate_fea.extract_fstr(line)
             out_file.write('%s\n' % fvstr)
 
-        for name in head_line:
+        # if num_process > 1:
+        #     p = Pool(num_process)
+        #     fvstrs = p.map(generate_fea.extract_fstr, lines)
+        # else:
+        #     fvstrs = map(generate_fea.extract_fstr, lines)
+        #
+        # for fvstr in fvstrs:
+        #     out_file.write('%s\n' % fvstr)
+
+        for name in head_fv.column_names():
             out_column_file.write('%s\n' % name)
-    """
 
