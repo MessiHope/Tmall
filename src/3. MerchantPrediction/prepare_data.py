@@ -19,29 +19,29 @@ def generate_dic(log_path):
             merchant = line[3]
 
             ## user_merchant_key_dic
-            if (user,merchant) in user_merchant_key_dic:
-                print (user,merchant)
-                pur_list = user_merchant_key_dic[(user,merchant)]
+            if (int(user), int(merchant)) in user_merchant_key_dic:
+                print(user, merchant)
+                pur_list = user_merchant_key_dic[(int(user),int(merchant))]
                 pur_list.append(line)
-                user_merchant_key_dic[(user,merchant)] = pur_list
+                user_merchant_key_dic[int(user), int(merchant)] = pur_list
             else:
-                user_merchant_key_dic[(user,merchant)] = [line]
+                user_merchant_key_dic[(int(user), int(merchant))] = [line]
 
             ## user_key_dic
-            if user in user_key_dic:
-                pur_list = user_key_dic[user]
+            if int(user) in user_key_dic:
+                pur_list = user_key_dic[int(user)]
                 pur_list.append(line)
-                user_key_dic[user] = pur_list
+                user_key_dic[int(user)] = pur_list
             else:
-                user_key_dic[user] = [line]
+                user_key_dic[int(user)] = [line]
 
             ## merchant_key_dic
-            if merchant in merchant_key_dic:
-                pur_list = merchant_key_dic[merchant]
+            if int(merchant) in merchant_key_dic:
+                pur_list = merchant_key_dic[int(merchant)]
                 pur_list.append(line)
-                merchant_key_dic[merchant] = pur_list
+                merchant_key_dic[int(merchant)] = pur_list
             else:
-                merchant_key_dic[merchant] = [line]
+                merchant_key_dic[int(merchant)] = [line]
     return user_merchant_key_dic,user_key_dic,merchant_key_dic
 
 def read_user_info(user_path):
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     user_path = pre_path + "/data/original_data/user_info_format1.csv"
     user_fea = read_user_info(user_path)
 
-    log_path = pre_path + "/data/original_data/user_log_format1.csv"
+    log_path = pre_path + "/data/original_data/sample_user_log_format1.csv"
     user_merchant_key_dic, user_key_dic, merchant_key_dic = generate_dic(log_path)
 
     headers = ['user_id','item_id','cat_id','seller_id','brand_id','time_stamp','action_type']
