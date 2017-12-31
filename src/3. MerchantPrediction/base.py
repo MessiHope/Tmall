@@ -7,10 +7,10 @@
 
 import pandas
 class Purchase:
-    def __init__(self,_user,_merchant,_label):
-        self.user = _user
-        self.merchant = _merchant
-        self.label = _label
+    def __init__(self, _triple):
+        self.user = int(_triple[0])
+        self.merchant = int(_triple[1])
+        self.label = int(_triple[2])
 
 class FeatureVector:
     def __init__(self):
@@ -38,3 +38,4 @@ class FeatureVector:
         L = [(idx, name) for name, idx in self.name2idx_.items()]
         names = [x[1] for x in sorted(L)]
         return names
+

@@ -50,7 +50,7 @@ def read_user_info(user_path):
         headers = next(data_file)
         lines = csv.reader(data_file)
         for line in lines:
-            user_fea[line[0]] = line[1:]
+            user_fea[int(line[0])] = line[1:]
     return user_fea
 
 def transfer(dic):
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     user_path = pre_path + "/data/original_data/user_info_format1.csv"
     user_fea = read_user_info(user_path)
 
-    log_path = pre_path + "/data/original_data/user_log_sample.csv"
+    log_path = pre_path + "/data/original_data/user_log_format1.csv"
     user_merchant_key_dic, user_key_dic, merchant_key_dic = generate_dic(log_path)
 
     headers = ['user_id','item_id','cat_id','seller_id','brand_id','time_stamp','action_type']
