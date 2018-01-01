@@ -13,10 +13,12 @@ import prepare_data
 import user_feature
 import merchant_feature
 import user_merchant_feature
+import pickle
 
 
 class GenerateFeatures:
     def __init__(self):
+        self.merchant2similar_dic = {}
         self.user_merchant_key_dic = {}
         self.user_key_dic = {}
         self.merchant_key_dic = {}
@@ -77,8 +79,9 @@ class GenerateFeatures:
         return user_merchant_key_dic
 
 
-    def gen_dic(self, user_dic_path, merchant_dic_path, user_merchant_dic_path, user_info_path):
-
+    def gen_dic(self, user_dic_path, merchant_dic_path, user_merchant_dic_path, user_info_path, similar_merchant_path):
+        f = open(similar_merchant_path, 'rb')
+        self.merchant2similar_dic = pickle.load(f)
         self.user_merchant_key_dic = self.read_user_merchant_dic(user_merchant_dic_path)
         self.user_key_dic = self.read_user_dic(user_dic_path)
         self.merchant_key_dic = self.read_merchant_dic(merchant_dic_path)
@@ -148,7 +151,8 @@ class GenerateFeatures:
         if not self.user_merchant_key_dic.__contains__((purchase.user, purchase.merchant)):
             return
         user_merchant_log = self.user_merchant_key_dic[(purchase.user, purchase.merchant)]
-        click_num, add_to_cart_num, purchase_num, add_to_favourite_num = user_merchant_feature.cal_action_num(user_merchant_log)
+        click_num, add_to_cart_num, purchase_num, add_to_favourite_num = \
+            user_merchant_feature.cal_action_num(user_merchant_log, self.merchant2similar_dic)
         fv.insert_real_value(click_num, user_merchant_feature.UM.click_num)
         fv.insert_real_value(add_to_cart_num, user_merchant_feature.UM.add_to_cart_num)
         fv.insert_real_value(purchase_num, user_merchant_feature.UM.purchase_num)
@@ -157,8 +161,8 @@ class GenerateFeatures:
     def extract_all(self, line):
         fv = base.FeatureVector()
         purchase = base.Purchase(line)
-        self.extract_user_feature(purchase, fv)
-        self.extract_merchant_feature(purchase, fv)
+        #self.extract_user_feature(purchase, fv)
+        #self.extract_merchant_feature(purchase, fv)
         self.extract_user_merchant_feature(purchase, fv)
         return purchase.label, fv
 
@@ -177,8 +181,9 @@ if __name__ == "__main__":
     merchant_dic_path = pre_path + "/../data/prepare_data/merchant_result.csv"
     user_merchant_dic_path = pre_path + "/../data/prepare_data/user_merchant_result.csv"
     user_info_path = pre_path + "/../data/original_data/user_info_format1.csv"
+    similar_merchant_path = pre_path + "/../data/prepare_data/similar_merchant.txt"
     generate_fea = GenerateFeatures()
-    generate_fea.gen_dic(user_dic_path, merchant_dic_path, user_merchant_dic_path, user_info_path)
+    generate_fea.gen_dic(user_dic_path, merchant_dic_path, user_merchant_dic_path, user_info_path, similar_merchant_path)
 
     in_path = pre_path + "/../data/original_data/train_format1.csv"
     out_path = pre_path + "/../data/features.csv"
@@ -197,5 +202,5 @@ if __name__ == "__main__":
         for line in lines:
             fvstr = generate_fea.extract_fstr(line)
             out_file.write('%s\n' % fvstr)
-            print fvstr
+            print(fvstr)
 

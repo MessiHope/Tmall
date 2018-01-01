@@ -8,6 +8,7 @@
 import csv
 from collections import Counter
 import operator
+import pickle
 
 
 def generate_dic(log_path):
@@ -45,8 +46,8 @@ def generate_dic(log_path):
                 merchant_key_dic[int(merchant)] = pur_list
             else:
                 merchant_key_dic[int(merchant)] = [line]
-    merchant2similar_set = compute_similar_merchant(user_key_dic, merchant_key_dic)
-    return user_merchant_key_dic, user_key_dic, merchant_key_dic, merchant2similar_set
+    merchant2similar_dic = compute_similar_merchant(user_key_dic, merchant_key_dic)
+    return user_merchant_key_dic, user_key_dic, merchant_key_dic, merchant2similar_dic
 
 def read_user_info(user_path):
     user_fea = {}
@@ -99,7 +100,7 @@ def compute_similar_merchant(user_key_dic, merchant_key_dic):
         merchants_dict = Counter(merchant_list)
 
         sorted_merchants = sorted(merchants_dict.items(), key=operator.itemgetter(1), reverse=True)
-        sorted_merchants = sorted_merchants[:5]
+        sorted_merchants = sorted_merchants[:6]
         for item in sorted_merchants:
             if item[0] == mid:
                 sorted_merchants.remove(item)
@@ -132,7 +133,7 @@ if __name__ == "__main__":
     user_fea = read_user_info(user_path)
 
     log_path = pre_path + "/data/original_data/sample_user_log_format1.csv"
-    user_merchant_key_dic, user_key_dic, merchant_key_dic, merchant2similar_set = generate_dic(log_path)
+    user_merchant_key_dic, user_key_dic, merchant_key_dic, merchant2similar_dic = generate_dic(log_path)
 
     headers = ['user_id','item_id','cat_id','seller_id','brand_id','time_stamp','action_type']
     user_merchant_result = transfer(user_merchant_key_dic)
@@ -147,3 +148,6 @@ if __name__ == "__main__":
     merchant_path = pre_path + "/data/prepare_data/merchant_result.csv"
     save_result(merchant_result,merchant_path,headers)
 
+    similar_merchant_path = pre_path + "/data/prepare_data/similar_merchant.txt"
+    f = open(similar_merchant_path, 'wb')
+    pickle.dump(merchant2similar_dic, f)

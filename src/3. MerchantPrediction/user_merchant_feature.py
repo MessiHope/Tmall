@@ -1,4 +1,6 @@
 from enum import Enum
+import os
+import feature
 
 
 class UM(Enum):
@@ -10,9 +12,25 @@ class UM(Enum):
     add_to_cart_ratio_in11 = 6
     purchase_ratio_in11 = 7
     add_to_favourite_ratio_in11 = 8
+    similar_merchant_id = 9
+    similar_merchant_num = 10
 
-merchant2similar_set = 0
+
 # ----------------user_merchant feature------------------
+
+
+def similar_merchant_id(similar_set):
+    id = []
+    for item in similar_set:
+        id.append(item[0])
+    return id
+
+
+def similar_merchant_num(similar_set):
+    count = []
+    for item in similar_set:
+        count.append(item[1])
+    return count
 
 
 def cal_action_num(user_merchant_log):
@@ -79,5 +97,19 @@ def cal_action_ration_in11(user_merchant_log):
 
 
 if __name__ == "__main__":
-    print("hello")
+    pre_path = os.path.dirname(os.getcwd())
+    ##  prepare data
+    user_dic_path = pre_path + "/../data/prepare_data/user_result.csv"
+    merchant_dic_path = pre_path + "/../data/prepare_data/merchant_result.csv"
+    user_merchant_dic_path = pre_path + "/../data/prepare_data/user_merchant_result.csv"
+    user_info_path = pre_path + "/../data/original_data/user_info_format1.csv"
+    similar_merchant_path = pre_path + "/../data/prepare_data/similar_merchant.txt"
+    generate_fea = feature.GenerateFeatures()
+    generate_fea.gen_dic(user_dic_path, merchant_dic_path, user_merchant_dic_path, user_info_path,
+                         similar_merchant_path)
+    user_merchant_log = generate_fea.user_merchant_key_dic[(100508, 2677)]
+    similar_set = generate_fea.merchant2similar_dic[2677]
+    cal_action_num(user_merchant_log)
+    similar_merchant_id(similar_set)
+    similar_merchant_num(similar_set)
 
