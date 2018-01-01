@@ -36,16 +36,73 @@ def purchased_11_ratio(merchant_log):
         return purchase_11_num / float(purchase_all_num)
 
 
-def repeat_user_ratio(merchant_log):
-    return 0.0
+def repeat_purchased_ratio(merchant_log):
+    user2purchase = {}
+    total_purchased_num = 0
+    for item in merchant_log:
+        action_type = item[-1] if len(item[-1]) > 0 else None
+        if action_type is None:
+            continue
+        if action_type != '2':
+            continue
+        total_purchased_num += 1
+        user = int(item[0])
+        if user2purchase.get(user) is None:
+            user2purchase[user] = []
+        else:
+            user2purchase[user].append(int(action_type))
+    repeat_purchased_num = 0
+    for key in user2purchase.keys():
+        repeat_purchased_num += len(user2purchase[key]) - 1
+    if total_purchased_num == 0:
+        return 0.0
+    return repeat_purchased_num / float(total_purchased_num)
 
 
-def repeat_user_before_11_ratio(merchant_log):
-    return 0.0
+def repeat_purchased_before_11_ratio(merchant_log):
+    user2purchase = {}
+    total_purchased_num = 0
+    for item in merchant_log:
+        action_type = item[-1] if len(item[-1]) > 0 else None
+        time_stamp = item[-2] if len(item[-2]) > 0 else None
+        if action_type is None or time_stamp is None:
+            continue
+        if action_type != '2' and time_stamp >= '1111':
+            continue
+        total_purchased_num += 1
+        user = int(item[0])
+        if user2purchase.get(user) is None:
+            user2purchase[user] = []
+        else:
+            user2purchase[user].append(int(action_type))
+    repeat_purchased_num = 0
+    for key in user2purchase.keys():
+        repeat_purchased_num += len(user2purchase[key]) - 1
+    if total_purchased_num == 0:
+        return 0.0
+    return repeat_purchased_num / float(total_purchased_num)
 
 
 def regular_user_ratio(merchant_log):
-    return 0.0
+    user2purchase = {}
+    for item in merchant_log:
+        action_type = item[-1] if len(item[-1]) > 0 else None
+        if action_type is None:
+            continue
+        if action_type != '2':
+            continue
+        user = int(item[0])
+        if user2purchase.get(user) is None:
+            user2purchase[user] = []
+        else:
+            user2purchase[user].append(int(action_type))
+    regular_user_num = 0
+    for key in user2purchase.keys():
+        if len(user2purchase[key]) >= 2:
+            regular_user_num += 1
+    if len(user2purchase.keys()) == 0:
+        return 0.0
+    return regular_user_num / float(len(user2purchase.keys()))
 
 def clicked_num(merchant_log):
     total = 0

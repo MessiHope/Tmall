@@ -76,6 +76,7 @@ class GenerateFeatures:
                 cur_merchant = merchant
         return user_merchant_key_dic
 
+
     def gen_dic(self, user_dic_path, merchant_dic_path, user_merchant_dic_path, user_info_path):
 
         self.user_merchant_key_dic = self.read_user_merchant_dic(user_merchant_dic_path)
@@ -83,29 +84,6 @@ class GenerateFeatures:
         self.merchant_key_dic = self.read_merchant_dic(merchant_dic_path)
         self.user_info = prepare_data.read_user_info(user_info_path)
 
-    # ----------------user_merchant feature------------------
-    def cal_action_num(self, user_merchant_log):
-        # action_type:
-        # 0 is for click, 1 is for add-to-cart, 2 is for purchase and 3 is for add-to-favourite.
-        click_num = 0
-        add_to_cart_num = 0
-        purchase_num = 0
-        add_to_favourite_num = 0
-
-        for item in user_merchant_log:
-            action_type = item[-1]
-            if action_type == "0":
-                click_num += 1
-            elif action_type == "1":
-                add_to_cart_num += 1
-            elif action_type == "2":
-                purchase_num += 1
-            elif action_type == "3":
-                add_to_favourite_num += 1
-        return click_num, add_to_cart_num, purchase_num, add_to_favourite_num
-
-    # TODO def user_merchant_
-    # add more features of user_merchant
 
     def extract_user_feature(self, purchase, fv):
         # user info
@@ -170,7 +148,7 @@ class GenerateFeatures:
         if not self.user_merchant_key_dic.__contains__((purchase.user, purchase.merchant)):
             return
         user_merchant_log = self.user_merchant_key_dic[(purchase.user, purchase.merchant)]
-        click_num, add_to_cart_num, purchase_num, add_to_favourite_num = self.cal_action_num(user_merchant_log)
+        click_num, add_to_cart_num, purchase_num, add_to_favourite_num = user_merchant_feature.cal_action_num(user_merchant_log)
         fv.insert_real_value(click_num, user_merchant_feature.UM.click_num)
         fv.insert_real_value(add_to_cart_num, user_merchant_feature.UM.add_to_cart_num)
         fv.insert_real_value(purchase_num, user_merchant_feature.UM.purchase_num)

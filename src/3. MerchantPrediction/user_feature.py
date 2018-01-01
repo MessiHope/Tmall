@@ -97,11 +97,11 @@ def daily_action_factor(user_log):
             continue
         tmp = int(action_type)
         sup = tmp
-        if tmp == 3: # add-to-favorite action
+        if tmp == 3:  # add-to-favorite action
             sup = 1
-        elif tmp == 2: # purchase action
+        elif tmp == 2:  # purchase action
             sup = 3
-        elif tmp == 1: # add-to-cart action
+        elif tmp == 1:  # add-to-cart action
             sup = 2
         weight_sum = weight_sum + pow(2, sup)
     return weight_sum
