@@ -91,7 +91,7 @@ def faved_num(merchant_log):
     return total
 
 
-# TODO def merchant_
+# TODO merchant
 #  add more features of merchant
 
 

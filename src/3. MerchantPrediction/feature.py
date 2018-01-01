@@ -78,10 +78,10 @@ class GenerateFeatures:
 
     def gen_dic(self, user_dic_path, merchant_dic_path, user_merchant_dic_path, user_info_path):
 
-        # self.user_merchant_key_dic = self.read_user_merchant_dic(user_merchant_dic_path)
-        # self.user_key_dic = self.read_user_dic(user_dic_path)
+        self.user_merchant_key_dic = self.read_user_merchant_dic(user_merchant_dic_path)
+        self.user_key_dic = self.read_user_dic(user_dic_path)
         self.merchant_key_dic = self.read_merchant_dic(merchant_dic_path)
-        # self.user_info = prepare_data.read_user_info(user_info_path)
+        self.user_info = prepare_data.read_user_info(user_info_path)
 
     # ----------------user_merchant feature------------------
     def cal_action_num(self, user_merchant_log):
@@ -109,27 +109,61 @@ class GenerateFeatures:
 
     def extract_user_feature(self, purchase, fv):
         # user info
-        purchase.user = 270336
         if self.user_info.__contains__(purchase.user):
             target_user_info = self.user_info[purchase.user]
             age_range = target_user_info[0] if len(target_user_info[0]) > 0 else None
             gender = target_user_info[1] if len(target_user_info[1]) > 0 else None
-            fv.insert_real_value(age_range, user_feature.U.age_range.value)
-            fv.insert_real_value(gender, user_feature.U.gender.value)
+            fv.insert_real_value(age_range, user_feature.U.age_range)
+            fv.insert_real_value(gender, user_feature.U.gender)
 
         # user_log
         if self.user_key_dic.__contains__(purchase.user):
             user_log = self.user_key_dic[purchase.user]
             is_new_user_flag = user_feature.is_new_user(user_log)
+            repeat_buy_ratio = user_feature.repeat_buy_ratio(user_log)
+            repeat_buy_before_11_ratio = user_feature.repeat_buy_before_11_ratio(user_log)
+            action_days = user_feature.action_days(user_log)
+            daily_action_factor = user_feature.daily_action_factor(user_log)
+            click_ratio_in11= user_feature.click_ratio_in11(user_log)
+            add_to_cart_ratio_in11= user_feature.add_to_cart_ratio_in11(user_log)
+            purchase_ratio_in11 = user_feature.purchase_ratio_in11(user_log)
+            fav_ratio_in11 = user_feature.fav_ratio_in11(user_log)
+            action_ratio_in11 = user_feature.action_ratio_in11(user_log)
+
             fv.insert_real_value(is_new_user_flag, user_feature.U.is_new_user)
+            fv.insert_real_value(repeat_buy_ratio, user_feature.U.repeat_buy_ratio)
+            fv.insert_real_value(repeat_buy_before_11_ratio, user_feature.U.repeat_buy_before_11_ratio)
+            fv.insert_real_value(action_days, user_feature.U.action_days)
+            fv.insert_real_value(daily_action_factor, user_feature.U.daily_action_factor)
+            fv.insert_real_value(click_ratio_in11, user_feature.U.click_ratio_in11)
+            fv.insert_real_value(add_to_cart_ratio_in11, user_feature.U.add_to_cart_ratio_in11)
+            fv.insert_real_value(purchase_ratio_in11, user_feature.U.purchase_ratio_in11)
+            fv.insert_real_value(fav_ratio_in11, user_feature.U.fav_ratio_in11)
+            fv.insert_real_value(action_ratio_in11, user_feature.U.action_ratio_in11)
 
     def extract_merchant_feature(self, purchase, fv):
         # merchant_log
         if not self.merchant_key_dic.__contains__(purchase.merchant):
             return
         merchant_log = self.merchant_key_dic[purchase.merchant]
-        cal_purchase_11_rate = merchant_feature.purchased_11_ratio(merchant_log)
-        fv.insert_real_value(cal_purchase_11_rate, merchant_feature.M.purchased_11_ratio)
+
+        purchased_11_ratio = merchant_feature.purchased_11_ratio(merchant_log)
+        repeat_user_ratio = merchant_feature.repeat_user_ratio(merchant_log)
+        repeat_user_before_11_ratio = merchant_feature.repeat_user_before_11_ratio(merchant_log)
+        regular_user_ratio = merchant_feature.regular_user_ratio(merchant_log)
+        clicked_num = merchant_feature.clicked_num(merchant_log)
+        added_to_cart_num = merchant_feature.added_to_cart_num(merchant_log)
+        purchased_num = merchant_feature.purchased_num(merchant_log)
+        faved_num = merchant_feature.faved_num(merchant_log)
+
+        fv.insert_real_value(purchased_11_ratio, merchant_feature.M.purchased_11_ratio)
+        fv.insert_real_value(repeat_user_ratio, merchant_feature.M.repeat_user_ratio)
+        fv.insert_real_value(repeat_user_before_11_ratio, merchant_feature.M.repeat_user_before_11_ratio)
+        fv.insert_real_value(regular_user_ratio, merchant_feature.M.regular_user_ratio)
+        fv.insert_real_value(clicked_num, merchant_feature.M.clicked_num)
+        fv.insert_real_value(added_to_cart_num, merchant_feature.M.added_to_cart_num)
+        fv.insert_real_value(purchased_num, merchant_feature.M.purchased_num)
+        fv.insert_real_value(faved_num, merchant_feature.M.faved_num)
 
     def extract_user_merchant_feature(self, purchase, fv):
         # user_merchant_log
@@ -144,7 +178,7 @@ class GenerateFeatures:
 
     def extract_all(self, line):
         fv = base.FeatureVector()
-        purchase = base.Purchase(line[0].split(','))
+        purchase = base.Purchase(line)
         self.extract_user_feature(purchase, fv)
         self.extract_merchant_feature(purchase, fv)
         self.extract_user_merchant_feature(purchase, fv)
@@ -168,35 +202,22 @@ if __name__ == "__main__":
     generate_fea = GenerateFeatures()
     generate_fea.gen_dic(user_dic_path, merchant_dic_path, user_merchant_dic_path, user_info_path)
 
-    in_path = pre_path + "/../data/original_data/train_format.csv"
-    with open(in_path) as in_file:
-        head_line = in_file.readline()
-        lines = [line for line in in_file]
-        fvstrs = generate_fea.extract_fstr(lines)
-
-    ## generate features
-    """
-    in_path = pre_path + "/data/original_data/train_format.csv"
-    out_path = pre_path + "/data/features.csv"
-    num_process = 48
-    print "Building feature from %s to %s..." % (in_path, out_path)
-
+    in_path = pre_path + "/../data/original_data/train_format1.csv"
+    out_path = pre_path + "/../data/features.csv"
     with open(in_path) as in_file, \
         open(out_path, 'w') as out_file, \
-        open(out_path + "_column_names", 'w') as out_column_file:
+        open(out_path.split(".csv")[0] + "_column_names", 'w') as out_column_file:
+        headers = in_file.readline()
+        lines = csv.reader(in_file)
 
-        head_line = in_file.readline()
-
-        lines = [line for line in in_file]
-        if num_process > 1:
-            p = Pool(num_process)
-            fvstrs = p.map(generate_fea.extract_fstr, lines)
-        else:
-            fvstrs = map(generate_fea.extract_fstr, lines)
-
-        for fvstr in fvstrs:
-            out_file.write('%s\n' % fvstr)
-
-        for name in head_line:
+        head_line = next(lines)
+        head_line[0] = "102269"
+        _, head_fv = generate_fea.extract_all(head_line)
+        for name in head_fv.column_names():
             out_column_file.write('%s\n' % name)
-    """
+
+        for line in lines:
+            fvstr = generate_fea.extract_fstr(line)
+            out_file.write('%s\n' % fvstr)
+            print fvstr
+

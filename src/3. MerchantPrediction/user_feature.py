@@ -18,6 +18,7 @@ class U(Enum):
     add_to_cart_ratio_in11 = 9
     purchase_ratio_in11 = 10
     fav_ratio_in11 = 11
+    action_ratio_in11 = 12
 
 
 # ----------------user feature------------------
@@ -52,7 +53,7 @@ def repeat_buy_ratio(user_log):
             repeat_buy_num = repeat_buy_num + 1
     if merchant_purchased == 0:
         return 0.0
-    return repeat_buy_num / float(len(identity_merchant))
+    return repeat_buy_num / float(len(identity_merchant)) if (len(identity_merchant))> 0 else None
 
 
 def repeat_buy_before_11_ratio(user_log):
@@ -72,7 +73,7 @@ def repeat_buy_before_11_ratio(user_log):
             repeat_buy_num = repeat_buy_num + 1
     if merchant_purchased == 0:
         return 0.0
-    return repeat_buy_num / float(len(identity_merchant))
+    return repeat_buy_num / float(len(identity_merchant)) if (len(identity_merchant))> 0 else None
 
 
 def action_days(user_log):
@@ -179,7 +180,8 @@ def action_ratio_in11(user_log):
         else:
             total = total + 1
     return subtotal / float(total) if total > 0 else 0.0
-# TODO def user
+
+# TODO user
 # add more features of user
 
 

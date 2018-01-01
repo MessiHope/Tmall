@@ -27,8 +27,8 @@ def cal_purchase_11_rate(merchant_log):
         return purchase_11_num / float(purchase_all_num)
 
 
-# TODO def merchant_
-#  add more features of merchant
+# TODO def user_merchant
+#  add more features of user merchant
 
 
 if __name__ == "__main__":
