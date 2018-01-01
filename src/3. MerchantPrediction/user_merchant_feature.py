@@ -11,6 +11,7 @@ class UM(Enum):
     purchase_ratio_in11 = 7
     add_to_favourite_ratio_in11 = 8
 
+merchant2similar_set = 0
 # ----------------user_merchant feature------------------
 
 

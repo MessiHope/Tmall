@@ -6,6 +6,9 @@
 #@describtion:generate dic
 
 import csv
+from collections import Counter
+import operator
+
 
 def generate_dic(log_path):
     user_merchant_key_dic = {}
@@ -42,7 +45,8 @@ def generate_dic(log_path):
                 merchant_key_dic[int(merchant)] = pur_list
             else:
                 merchant_key_dic[int(merchant)] = [line]
-    return user_merchant_key_dic,user_key_dic,merchant_key_dic
+    merchant2similar_set = compute_similar_merchant(user_key_dic, merchant_key_dic)
+    return user_merchant_key_dic, user_key_dic, merchant_key_dic, merchant2similar_set
 
 def read_user_info(user_path):
     user_fea = {}
@@ -67,14 +71,68 @@ def save_result(result,out_path,headers):
         writer.writerow(headers)
         writer.writerows(result)
 
+
+def compute_similar_merchant(user_key_dic, merchant_key_dic):
+    mid2uid = {}
+    uid2mid = {}
+    for item in merchant_key_dic.items():
+        mid = int(item[0])
+        for log in item[1]:
+            if mid2uid.get(mid) is None:
+                mid2uid[mid] = set()
+            uid = int(log[0])
+            mid2uid[mid].add(uid)
+
+    for item in user_key_dic.items():
+        uid = int(item[0])
+        for log in item[1]:
+            if uid2mid.get(uid) is None:
+                uid2mid[uid] = set()
+            mid = int(log[3])
+            uid2mid[uid].add(mid)
+    similar_merchant = {}
+    for mid in mid2uid.keys():
+        user_set = mid2uid[mid]
+        merchant_list = []
+        for uid in user_set:
+            merchant_list.extend(list(uid2mid[uid]))
+        merchants_dict = Counter(merchant_list)
+
+        sorted_merchants = sorted(merchants_dict.items(), key=operator.itemgetter(1), reverse=True)
+        sorted_merchants = sorted_merchants[:5]
+        for item in sorted_merchants:
+            if item[0] == mid:
+                sorted_merchants.remove(item)
+        # merchants 为与mid商家拥有共同用户最多的5个商家以及对应的共同用户数
+        merchants = set(sorted_merchants)
+
+        similar_merchant[mid] = merchants
+
+    return similar_merchant
+
+
+
 import os
 if __name__ == "__main__":
+    # test compute_similar_merchat method
+    ukd = {}
+    ukd[1] = [[0, 0, 0, 1]]
+    ukd[1].append([0, 0, 0, 3])
+    ukd[2] = [[0, 0, 0, 1], [0, 0, 0, 2]]
+    ukd[3] = [[0, 0, 0, 1], [0, 0, 0, 2]]
+    ukd[4] = [[0, 0, 0, 3]]
+    mkd = {}
+    mkd[1] = [[1, 0, 0, 1], [2, 0, 0, 1], [3, 0, 0, 1]]
+    mkd[2] = [[2, 0, 0, 2], [3, 0, 0, 2]]
+    mkd[3] = [[1, 0, 0, 3], [4, 0, 0, 3]]
+    compute_similar_merchant(ukd, mkd)
+
     pre_path = os.path.dirname(os.path.dirname(os.getcwd()))
     user_path = pre_path + "/data/original_data/user_info_format1.csv"
     user_fea = read_user_info(user_path)
 
     log_path = pre_path + "/data/original_data/sample_user_log_format1.csv"
-    user_merchant_key_dic, user_key_dic, merchant_key_dic = generate_dic(log_path)
+    user_merchant_key_dic, user_key_dic, merchant_key_dic, merchant2similar_set = generate_dic(log_path)
 
     headers = ['user_id','item_id','cat_id','seller_id','brand_id','time_stamp','action_type']
     user_merchant_result = transfer(user_merchant_key_dic)
