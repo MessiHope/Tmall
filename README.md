@@ -6,10 +6,13 @@ Tmall, a project assigned by a course we attended, called Data Mining.
 我们在“双十一”当天提供一批商家及其相应的新买家。您的任务是预测未来哪些特定商家的新买家将成为忠实客户。这些新买家在6个月内再次购买同一批商品的可能性。
 
 ## 运行说明
+
+对于以下问题，直接运行下面的函数
+
 Q1  get_frequent_items.py
 
 Q2  user_classify.py
 
-Q3  validate.py
+Q3  find_similar_merchant.py
 
-Q4
+Q4  validate.py

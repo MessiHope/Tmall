@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 #coding:utf-8
+#@Time: 2018/1/2下午11:47
+#@Author: wangximei
+#@File: 1.py
+#@describtion:
+
+#!/usr/bin/env python
+#coding:utf-8
 #@Time: 2017/12/25下午4:33
 #@Author: wangximei
 #@File: get_frequent_items.py
@@ -53,11 +60,11 @@ if __name__ == "__main__":
     transactions = to_transactions(purchase_group)
     end_time_1 = time.time()
     print "mining pattern running time :",end_time_1-start_time
-    support_threshold = 5
+    print len(transactions)
+    support_threshold = int(float(len(transactions))*0.03)
+    print support_threshold
     min_prob = 0.9
     testfpgrowth.run_fpgrowth(transactions, support_threshold, min_prob)
     end_time_2 = time.time()
     print "mining rules running time :",end_time_1-start_time
 
-    ##TODO 实验1. 对比不同support_threshold得到的patterns数目
-    ##TODO 实验2. 对比不同min_prob得到的rules数目
