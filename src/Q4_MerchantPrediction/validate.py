@@ -9,6 +9,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import load_svmlight_file
 from sklearn.cross_validation import train_test_split
 from sklearn.metrics import accuracy_score, recall_score, precision_score
+from sklearn import metrics
+
 
 def xgboost_model(X_train, X_valid, y_train):
     dtrain = xgboost.DMatrix(X_train, y_train)
@@ -62,6 +64,11 @@ def print_fimportance(model):
     elif type(model) is RandomForestClassifier():
         print "No feature importance in Random Forest"
 
+def ensemble_model(y_pred_prob_xg,y_pred_prob_LR,y_pred_prob_RF):
+    y_pred_prob = []
+    for a,b,c in zip(y_pred_prob_xg,y_pred_prob_LR,y_pred_prob_RF):
+        y_pred_prob.append((a+b+c)/3.0)
+    return y_pred_prob
 import os
 if __name__ == "__main__":
     # in_path = sys.argv[1]
@@ -79,10 +86,21 @@ if __name__ == "__main__":
             train_test_split(X, y, id_list, test_size=.6)
 
     print "Training model ..."
-    model, y_pred_prob = xgboost_model(X_train, X_valid, y_train)
+    # Model 1: xgboost
+    model_xg, y_pred_prob_xg = xgboost_model(X_train, X_valid, y_train)
+
+    # Model 2: Logistic Regression
+    model_LR, y_pred_prob_LR = LR_model(X_train, X_valid, y_train)
+
+    # Model 3: Random Forest
+    model_RF, y_pred_prob_RF = RF_model(X_train, X_valid, y_train)
+
+    ##  ensemble models
+    y_pred_prob = ensemble_model(y_pred_prob_xg, y_pred_prob_LR, y_pred_prob_RF)
 
     print "choose best threshold ..."
     best_F, best_P, best_R, best_threshold = 0, 0, 0, 0
+    print "threshold\tPrecision\tRecall\tACC"
     for threshold in np.linspace(.1, .9, 20):
         y_pred = np.zeros(len(y_valid))
         y_pred[y_pred_prob > threshold] = 1
@@ -93,13 +111,13 @@ if __name__ == "__main__":
         P = precision_score(y_valid_change, y_pred)
         R = recall_score(y_valid_change, y_pred)
         F = 5 * P * R / (2 * P + 3 * R)
-        print "\tthreshold %f, P %f, R %f, F %f" % (threshold, P, R, F)
+        print "%f\t%f\t%f\t%f" % (threshold, P, R, ACC)
         if F > best_F:
             best_F = F
             best_P = P
             best_R = R
             best_threshold = threshold
-    print "best threshold %f, P %f, R %f, F %f" % (best_threshold, best_P, best_R, best_F)
+    print "best threshold %f, P %f, R %f, ACC %f" % (best_threshold, best_P, best_R, ACC)
 
     print "Wrong result:"
     N_test = len(id_valid)
@@ -112,7 +130,26 @@ if __name__ == "__main__":
         print "\t id %d, label %d, P[y=1] %f" % (x[0], x[1], x[2])
     num_correct = np.sum(y_valid == y_pred)
     acc = 1.0 * num_correct / len(y_valid)
+
     print "acc: %f, num_wrong: %d" % (acc, len(y_valid) - num_correct)
 
-    print "Feature importance:"
-    print_fimportance(model)
+    print "Feature importance xgboost:"
+    print_fimportance(model_xg)
+
+    print "Feature importance LR:"
+    print_fimportance(model_LR)
+
+    print "Feature importance RF:"
+    print_fimportance(model_RF)
+
+    test_auc_xg = metrics.roc_auc_score(y_valid, y_pred_prob_xg)
+    print "test accuracy xgboost: ",test_auc_xg
+
+    test_auc_LR = metrics.roc_auc_score(y_valid, y_pred_prob_LR)
+    print "test accuracy Logistic Regression: ", test_auc_LR
+
+    test_auc_RF = metrics.roc_auc_score(y_valid, y_pred_prob_RF)
+    print "test accuracy Random Forest: ", test_auc_RF
+
+    test_auc = metrics.roc_auc_score(y_valid, y_pred_prob)
+    print "test accuracy ensemble: ", test_auc
