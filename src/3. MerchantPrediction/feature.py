@@ -153,10 +153,20 @@ class GenerateFeatures:
         user_merchant_log = self.user_merchant_key_dic[(purchase.user, purchase.merchant)]
         click_num, add_to_cart_num, purchase_num, add_to_favourite_num = \
             user_merchant_feature.cal_action_num(user_merchant_log, self.merchant2similar_dic)
+        click_11,add_to_cart_11,purchase_11,add_to_favourite_11 = \
+            user_merchant_feature.cal_action_ration_in11(user_merchant_log)
         fv.insert_real_value(click_num, user_merchant_feature.UM.click_num)
         fv.insert_real_value(add_to_cart_num, user_merchant_feature.UM.add_to_cart_num)
         fv.insert_real_value(purchase_num, user_merchant_feature.UM.purchase_num)
         fv.insert_real_value(add_to_favourite_num, user_merchant_feature.UM.add_to_favourite_num)
+
+        fv.insert_real_value(click_11, user_merchant_feature.UM.click_11)
+        fv.insert_real_value(add_to_cart_11, user_merchant_feature.UM.add_to_cart_11)
+        fv.insert_real_value(purchase_11, user_merchant_feature.UM.purchase_11)
+        fv.insert_real_value(add_to_favourite_11, user_merchant_feature.UM.add_to_favourite_11)
+
+        # similar_merchant_id(similar_set)
+        # similar_merchant_num(similar_set)
 
     def extract_all(self, line):
         fv = base.FeatureVector()
@@ -194,7 +204,8 @@ if __name__ == "__main__":
         lines = csv.reader(in_file)
 
         head_line = next(lines)
-        head_line[0] = "102269"
+        head_line[0] = "186568"
+        head_line[1] = "3467"
         _, head_fv = generate_fea.extract_all(head_line)
         for name in head_fv.column_names():
             out_column_file.write('%s\n' % name)
