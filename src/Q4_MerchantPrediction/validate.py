@@ -9,6 +9,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import load_svmlight_file
 from sklearn.cross_validation import train_test_split
 from sklearn.metrics import accuracy_score, recall_score, precision_score
+from sklearn import metrics
+
 
 def xgboost_model(X_train, X_valid, y_train):
     dtrain = xgboost.DMatrix(X_train, y_train)
@@ -128,6 +130,7 @@ if __name__ == "__main__":
         print "\t id %d, label %d, P[y=1] %f" % (x[0], x[1], x[2])
     num_correct = np.sum(y_valid == y_pred)
     acc = 1.0 * num_correct / len(y_valid)
+
     print "acc: %f, num_wrong: %d" % (acc, len(y_valid) - num_correct)
 
     print "Feature importance xgboost:"
@@ -138,3 +141,15 @@ if __name__ == "__main__":
 
     print "Feature importance RF:"
     print_fimportance(model_RF)
+
+    test_auc_xg = metrics.roc_auc_score(y_valid, y_pred_prob_xg)
+    print "test accuracy xgboost: ",test_auc_xg
+
+    test_auc_LR = metrics.roc_auc_score(y_valid, y_pred_prob_LR)
+    print "test accuracy Logistic Regression: ", test_auc_LR
+
+    test_auc_RF = metrics.roc_auc_score(y_valid, y_pred_prob_RF)
+    print "test accuracy Random Forest: ", test_auc_RF
+
+    test_auc = metrics.roc_auc_score(y_valid, y_pred_prob)
+    print "test accuracy ensemble: ", test_auc
