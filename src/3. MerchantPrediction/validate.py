@@ -42,7 +42,7 @@ def RF_model(X_train, X_valid, y_train):
     return model, y_pred_prob
 
 def print_fimportance(model):
-    with open(in_path + "_column_names") as name_file:
+    with open(in_path.split(".csv")[0] + "_column_names") as name_file:
         feature_names = [line.strip() for line in name_file]
     if type(model) is xgboost.Booster:
         l = sorted(model.get_score(importance_type='weight').items(), key=lambda x: -x[1])
@@ -62,8 +62,12 @@ def print_fimportance(model):
     elif type(model) is RandomForestClassifier():
         print "No feature importance in Random Forest"
 
+import os
 if __name__ == "__main__":
-    in_path = sys.argv[1]
+    # in_path = sys.argv[1]
+    pre_path = os.path.dirname(os.getcwd())
+    ##  prepare data
+    in_path = pre_path + "/../data/features.csv"
     print "Training model using features file %s..." % in_path
 
     print "Loading feature file ..."
