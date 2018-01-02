@@ -167,8 +167,6 @@ if __name__ == "__main__":
     merchant_log = generate_fea.merchant_key_dic[1]  # 1 10
 
     print(purchased_11_ratio(merchant_log))
-    print(repeat_user_ratio(merchant_log))
-    print(repeat_user_before_11_ratio(merchant_log))
     print(regular_user_ratio(merchant_log))
     print(clicked_num(merchant_log))
     print(added_to_cart_num(merchant_log))

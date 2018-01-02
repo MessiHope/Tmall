@@ -129,8 +129,6 @@ class GenerateFeatures:
         merchant_log = self.merchant_key_dic[purchase.merchant]
 
         purchased_11_ratio = merchant_feature.purchased_11_ratio(merchant_log)
-        repeat_user_ratio = merchant_feature.repeat_user_ratio(merchant_log)
-        repeat_user_before_11_ratio = merchant_feature.repeat_user_before_11_ratio(merchant_log)
         regular_user_ratio = merchant_feature.regular_user_ratio(merchant_log)
         clicked_num = merchant_feature.clicked_num(merchant_log)
         added_to_cart_num = merchant_feature.added_to_cart_num(merchant_log)
@@ -138,8 +136,6 @@ class GenerateFeatures:
         faved_num = merchant_feature.faved_num(merchant_log)
 
         fv.insert_real_value(purchased_11_ratio, merchant_feature.M.purchased_11_ratio)
-        fv.insert_real_value(repeat_user_ratio, merchant_feature.M.repeat_user_ratio)
-        fv.insert_real_value(repeat_user_before_11_ratio, merchant_feature.M.repeat_user_before_11_ratio)
         fv.insert_real_value(regular_user_ratio, merchant_feature.M.regular_user_ratio)
         fv.insert_real_value(clicked_num, merchant_feature.M.clicked_num)
         fv.insert_real_value(added_to_cart_num, merchant_feature.M.added_to_cart_num)
@@ -152,7 +148,7 @@ class GenerateFeatures:
             return
         user_merchant_log = self.user_merchant_key_dic[(purchase.user, purchase.merchant)]
         click_num, add_to_cart_num, purchase_num, add_to_favourite_num = \
-            user_merchant_feature.cal_action_num(user_merchant_log, self.merchant2similar_dic)
+            user_merchant_feature.cal_action_num(user_merchant_log)
         click_11,add_to_cart_11,purchase_11,add_to_favourite_11 = \
             user_merchant_feature.cal_action_ration_in11(user_merchant_log)
         fv.insert_real_value(click_num, user_merchant_feature.UM.click_num)
@@ -160,10 +156,10 @@ class GenerateFeatures:
         fv.insert_real_value(purchase_num, user_merchant_feature.UM.purchase_num)
         fv.insert_real_value(add_to_favourite_num, user_merchant_feature.UM.add_to_favourite_num)
 
-        fv.insert_real_value(click_11, user_merchant_feature.UM.click_11)
-        fv.insert_real_value(add_to_cart_11, user_merchant_feature.UM.add_to_cart_11)
-        fv.insert_real_value(purchase_11, user_merchant_feature.UM.purchase_11)
-        fv.insert_real_value(add_to_favourite_11, user_merchant_feature.UM.add_to_favourite_11)
+        fv.insert_real_value(click_11, user_merchant_feature.UM.click_ratio_in11)
+        fv.insert_real_value(add_to_cart_11, user_merchant_feature.UM.add_to_cart_ratio_in11)
+        fv.insert_real_value(purchase_11, user_merchant_feature.UM.purchase_ratio_in11)
+        fv.insert_real_value(add_to_favourite_11, user_merchant_feature.UM.add_to_favourite_ratio_in11)
 
         # similar_merchant_id(similar_set)
         # similar_merchant_num(similar_set)
@@ -171,8 +167,8 @@ class GenerateFeatures:
     def extract_all(self, line):
         fv = base.FeatureVector()
         purchase = base.Purchase(line)
-        #self.extract_user_feature(purchase, fv)
-        #self.extract_merchant_feature(purchase, fv)
+        self.extract_user_feature(purchase, fv)
+        self.extract_merchant_feature(purchase, fv)
         self.extract_user_merchant_feature(purchase, fv)
         return purchase.label, fv
 
