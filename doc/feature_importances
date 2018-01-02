@@ -1,0 +1,30 @@
+-------------1. xgboost-------------------------
+Weight: [('U.age_range', 2036),
+('U.repeat_buy_before_11_ratio', 1349),
+('U.gender', 746),
+('U.daily_action_factor', 206),
+('U.is_new_user', 5)]
+
+Gain: [('U.age_range', 2.0307170988703347),
+('U.repeat_buy_before_11_ratio', 1.9056323209785038),
+('U.gender', 1.8058466072386041),
+('U.daily_action_factor', 1.7891015825242724),
+('U.is_new_user', 0.5095634)]
+
+Cover: [('U.is_new_user', 52.577923999999996),
+('U.repeat_buy_before_11_ratio', 31.671015322461066),
+('U.daily_action_factor', 31.644441601941757),
+('U.age_range', 30.46266322200393),
+('U.gender', 25.948356903485248)]
+
+-------------2. Logistic Regression--------------
+[('U.age_range', 0.072429334553043692),
+('U.repeat_buy_before_11_ratio', 0.031719141848516291),
+('U.is_new_user', 0.018009604042097178),
+('U.action_days', 0.0),
+('U.daily_action_factor', -0.014047054428511636),
+('U.click_ratio_in11', -0.014047054428511636),
+('U.gender', -0.03431855471493888),
+('U.repeat_buy_ratio', -0.11029803956129551)]
+
+
